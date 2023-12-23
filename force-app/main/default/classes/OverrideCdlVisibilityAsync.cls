@@ -13,35 +13,40 @@ public with sharing class OverrideCdlVisibilityAsync implements Queueable {
     }
 
     public void execute(QueueableContext context) {
-        List<ContentDocumentLink> contentDocumentLinks = [
-            SELECT Id, ContentDocumentId, Visibility, LinkedEntityId
-            FROM ContentDocumentLink
-            WHERE Id IN :contentDocumentLinksMap.keySet()
-        ];
+        if ([SELECT Id FROM Site].size() > 0) {
+            // Only run if digital experiences are enabled
+            List<ContentDocumentLink> contentDocumentLinks = [
+                SELECT Id, ContentDocumentId, Visibility, LinkedEntityId
+                FROM ContentDocumentLink
+                WHERE Id IN :contentDocumentLinksMap.keySet()
+            ];
 
-        List<ContentDocumentLink> caseContentDocumentLinks = findCaseContentDocumentLinks(
-            contentDocumentLinks
-        );
-        List<Id> linkedEntityIds = getLinkedEntityIds(caseContentDocumentLinks);
-        List<FeedAttachment> feedAttachments = getContentFeedAttachments(
-            linkedEntityIds
-        );
-        Map<Id, List<Id>> feedContentDocumentIdsMap = mapFeedContentDocumentIds(
-            linkedEntityIds,
-            feedAttachments
-        );
+            List<ContentDocumentLink> caseContentDocumentLinks = findCaseContentDocumentLinks(
+                contentDocumentLinks
+            );
+            List<Id> linkedEntityIds = getLinkedEntityIds(
+                caseContentDocumentLinks
+            );
+            List<FeedAttachment> feedAttachments = getContentFeedAttachments(
+                linkedEntityIds
+            );
+            Map<Id, List<Id>> feedContentDocumentIdsMap = mapFeedContentDocumentIds(
+                linkedEntityIds,
+                feedAttachments
+            );
 
-        for (ContentDocumentLink cdl : caseContentDocumentLinks) {
-            if (
-                feedContentDocumentIdsMap.isEmpty() ||
-                !feedContentDocumentIdsMap.get(cdl.LinkedEntityId)
-                    .contains(cdl.ContentDocumentId)
-            ) {
-                cdl.visibility = 'AllUsers';
+            for (ContentDocumentLink cdl : caseContentDocumentLinks) {
+                if (
+                    feedContentDocumentIdsMap.isEmpty() ||
+                    !feedContentDocumentIdsMap.get(cdl.LinkedEntityId)
+                        .contains(cdl.ContentDocumentId)
+                ) {
+                    cdl.visibility = 'AllUsers';
+                }
             }
-        }
 
-        update contentDocumentLinks;
+            update contentDocumentLinks;
+        }
     }
 
     private List<ContentDocumentLink> findCaseContentDocumentLinks(
