@@ -5,7 +5,7 @@
       "default": true
     }
   ],
-  "name": "cdl-visibility",
+  "name": "override-cdl-visibility",
   "namespace": "",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "sourceApiVersion": "58.0"
