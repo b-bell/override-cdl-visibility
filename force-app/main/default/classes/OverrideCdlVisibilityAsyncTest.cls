@@ -133,11 +133,20 @@ public with sharing class OverrideCdlVisibilityAsyncTest {
             WHERE LinkedEntityId = :testCase.Id
         ];
 
-        System.assertEquals(
-            'InternalUsers',
-            updatedLinkedFile.Visibility,
-            'File should be visible to internal users'
-        );
+        List<Site> sites = [SELECT Id FROM Site];
+        if (sites.size() > 0) {
+            System.assertEquals(
+                'InternalUsers',
+                updatedLinkedFile.Visibility,
+                'File should be visible to internal users'
+            );
+        } else {
+            System.assertEquals(
+                'AllUsers',
+                updatedLinkedFile.Visibility,
+                'File should be visible to all users'
+            );
+        }
     }
 
     @IsTest
