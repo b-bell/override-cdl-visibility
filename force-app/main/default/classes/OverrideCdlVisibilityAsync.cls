@@ -13,40 +13,50 @@ public with sharing class OverrideCdlVisibilityAsync implements Queueable {
     }
 
     public void execute(QueueableContext context) {
-        if ([SELECT Id FROM Site].size() > 0) {
-            // Only run if digital experiences are enabled
-            List<ContentDocumentLink> contentDocumentLinks = [
-                SELECT Id, ContentDocumentId, Visibility, LinkedEntityId
-                FROM ContentDocumentLink
-                WHERE Id IN :contentDocumentLinksMap.keySet()
-            ];
-
-            List<ContentDocumentLink> caseContentDocumentLinks = findCaseContentDocumentLinks(
-                contentDocumentLinks
-            );
-            List<Id> linkedEntityIds = getLinkedEntityIds(
-                caseContentDocumentLinks
-            );
-            List<FeedAttachment> feedAttachments = getContentFeedAttachments(
-                linkedEntityIds
-            );
-            Map<Id, List<Id>> feedContentDocumentIdsMap = mapFeedContentDocumentIds(
-                linkedEntityIds,
-                feedAttachments
-            );
-
-            for (ContentDocumentLink cdl : caseContentDocumentLinks) {
-                if (
-                    feedContentDocumentIdsMap.isEmpty() ||
-                    !feedContentDocumentIdsMap.get(cdl.LinkedEntityId)
-                        .contains(cdl.ContentDocumentId)
-                ) {
-                    cdl.visibility = 'AllUsers';
-                }
-            }
-
-            update contentDocumentLinks;
+        if ([SELECT Id FROM Site].size() == 0) {
+            // Do not run if org does not have digital experiences enabled
+            return;
         }
+
+        List<Override_CDL_SObject__mdt> overrideCdlSObjects = [
+            SELECT Id, DeveloperName
+            FROM Override_CDL_SObject__mdt
+        ];
+
+        if (overrideCdlSObjects.size() == 0) {
+            // Do not run if no Override_CDL_SObject__c records exist
+            return;
+        }
+
+        List<ContentDocumentLink> contentDocumentLinks = [
+            SELECT Id, ContentDocumentId, Visibility, LinkedEntityId
+            FROM ContentDocumentLink
+            WHERE Id IN :contentDocumentLinksMap.keySet()
+        ];
+
+        List<ContentDocumentLink> caseContentDocumentLinks = findCaseContentDocumentLinks(
+            contentDocumentLinks
+        );
+        List<Id> linkedEntityIds = getLinkedEntityIds(caseContentDocumentLinks);
+        List<FeedAttachment> feedAttachments = getContentFeedAttachments(
+            linkedEntityIds
+        );
+        Map<Id, List<Id>> feedContentDocumentIdsMap = mapFeedContentDocumentIds(
+            linkedEntityIds,
+            feedAttachments
+        );
+
+        for (ContentDocumentLink cdl : caseContentDocumentLinks) {
+            if (
+                feedContentDocumentIdsMap.isEmpty() ||
+                !feedContentDocumentIdsMap.get(cdl.LinkedEntityId)
+                    .contains(cdl.ContentDocumentId)
+            ) {
+                cdl.visibility = 'AllUsers';
+            }
+        }
+
+        update contentDocumentLinks;
     }
 
     private List<ContentDocumentLink> findCaseContentDocumentLinks(
