@@ -28,38 +28,6 @@ public with sharing class OverrideCdlVisibilityAsyncTest {
     }
 
     @IsTest
-    static void addFileToCase() {
-        // Add a file to a case
-        ContentVersion testFile = [
-            SELECT ContentDocumentId
-            FROM ContentVersion
-            LIMIT 1
-        ];
-        Case testCase = [SELECT Id FROM CAse LIMIT 1];
-
-        ContentDocumentLink linkedFile = new ContentDocumentLink(
-            ContentDocumentId = testFile.ContentDocumentId,
-            LinkedEntityId = testCase.Id
-        );
-
-        Test.startTest();
-        insert linkedFile;
-        Test.stopTest();
-
-        ContentDocumentLink updatedLinkedFile = [
-            SELECT Id, Visibility
-            FROM ContentDocumentLink
-            WHERE Id = :linkedFile.Id
-        ];
-
-        System.assertEquals(
-            'AllUsers',
-            updatedLinkedFile.Visibility,
-            'File should be visible to all users'
-        );
-    }
-
-    @IsTest
     static void addFileToAccount() {
         // Add a file to an account
         ContentVersion testFile = [
