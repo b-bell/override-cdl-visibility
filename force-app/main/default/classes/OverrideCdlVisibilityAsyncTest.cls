@@ -7,7 +7,6 @@ public with sharing class OverrideCdlVisibilityAsyncTest {
             VersionData = Blob.valueOf('Test Content'),
             IsMajorVersion = true
         );
-
         insert newFile;
 
         Account newAccount = new Account(
@@ -16,14 +15,12 @@ public with sharing class OverrideCdlVisibilityAsyncTest {
             BillingState = 'Test State',
             BillingCountry = 'Test Country'
         );
-
         insert newAccount;
 
         FeedItem newFeedItem = new FeedItem(
             Body = 'Test FeedItem Body',
             ParentId = newAccount.Id
         );
-
         insert newFeedItem;
     }
 
@@ -52,6 +49,7 @@ public with sharing class OverrideCdlVisibilityAsyncTest {
             FROM ContentDocumentLink
             WHERE Id = :linkedFile.Id
         ];
+
         System.assertEquals(
             'AllUsers',
             updatedLinkedFile.Visibility,
