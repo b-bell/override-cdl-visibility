@@ -93,8 +93,8 @@ public with sharing class OverrideCdlVisibilityAsyncTest {
     }
 
     @IsTest
-    static void addFileAndLinkToCaseFeed() {
-        // Add a file to a case chatter post
+    static void addFileAndLinkToAccountFeed() {
+        // Add a file and link to an account chatter post
         ContentVersion testFile = [
             SELECT Id, ContentDocumentId
             FROM ContentVersion
@@ -119,5 +119,17 @@ public with sharing class OverrideCdlVisibilityAsyncTest {
         insert testFileFeedAttachment;
         insert testLinkFeedAttachment;
         Test.stopTest();
+
+        ContentDocumentLink updatedLinkedFile = [
+            SELECT Id, Visibility
+            FROM ContentDocumentLink
+            WHERE LinkedEntityId = :testAccount.Id
+        ];
+
+        System.assertEquals(
+            'InternalUsers',
+            updatedLinkedFile.Visibility,
+            'File should be visible to internal users'
+        );
     }
 }
