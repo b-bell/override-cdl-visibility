@@ -2,7 +2,7 @@ public with sharing class OverrideCdlVisibilityAsync implements Queueable {
     // Async class that overrides the default visibility setting
     // for files added directly to a case to All Users.
     // Async is required to check if the file is related to a feed item after
-    // the transaction is complete.
+    // the transaction is complete so that the feed item's visibility is honored.
 
     private Map<Id, ContentDocumentLink> contentDocumentLinksMap;
 
