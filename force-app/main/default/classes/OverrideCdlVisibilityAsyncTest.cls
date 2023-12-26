@@ -90,20 +90,11 @@ public with sharing class OverrideCdlVisibilityAsyncTest {
             FROM ContentDocumentLink
             WHERE Id = :linkedFile.Id
         ];
-        List<Site> sites = [SELECT Id FROM Site];
-        if (sites.size() > 0) {
-            System.assertEquals(
-                'InternalUsers',
-                updatedLinkedFile.Visibility,
-                'File should be visible to internal users'
-            );
-        } else {
-            System.assertEquals(
-                'AllUsers',
-                updatedLinkedFile.Visibility,
-                'File should be visible to all users'
-            );
-        }
+        System.assertEquals(
+            'AllUsers',
+            updatedLinkedFile.Visibility,
+            'File should be visible to all users'
+        );
     }
 
     @IsTest
@@ -133,20 +124,11 @@ public with sharing class OverrideCdlVisibilityAsyncTest {
             WHERE LinkedEntityId = :testCase.Id
         ];
 
-        List<Site> sites = [SELECT Id FROM Site];
-        if (sites.size() > 0) {
-            System.assertEquals(
-                'InternalUsers',
-                updatedLinkedFile.Visibility,
-                'File should be visible to internal users'
-            );
-        } else {
-            System.assertEquals(
-                'AllUsers',
-                updatedLinkedFile.Visibility,
-                'File should be visible to all users'
-            );
-        }
+        System.assertEquals(
+            'InternalUsers',
+            updatedLinkedFile.Visibility,
+            'File should be visible to internal users'
+        );
     }
 
     @IsTest

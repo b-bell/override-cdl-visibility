@@ -13,31 +13,13 @@ public with sharing class OverrideCdlVisibilityAsync implements Queueable {
     }
 
     public void execute(QueueableContext context) {
-        if ([SELECT Id FROM Site].size() == 0) {
-            // Do not run if org does not have digital experiences enabled
-            return;
-        }
-
-        List<Override_CDL_SObject__mdt> overrideCdlSObjects = [
-            SELECT Id, DeveloperName
-            FROM Override_CDL_SObject__mdt
-        ];
-
-        if (overrideCdlSObjects.size() == 0) {
-            // Do not run if no Override_CDL_SObject__c records exist
-            return;
-        }
-
         List<ContentDocumentLink> contentDocumentLinks = [
             SELECT Id, ContentDocumentId, Visibility, LinkedEntityId
             FROM ContentDocumentLink
             WHERE Id IN :contentDocumentLinksMap.keySet()
         ];
 
-        List<ContentDocumentLink> caseContentDocumentLinks = findCaseContentDocumentLinks(
-            contentDocumentLinks
-        );
-        List<Id> linkedEntityIds = getLinkedEntityIds(caseContentDocumentLinks);
+        List<Id> linkedEntityIds = getLinkedEntityIds(contentDocumentLinks);
         List<FeedAttachment> feedAttachments = getContentFeedAttachments(
             linkedEntityIds
         );
@@ -46,7 +28,7 @@ public with sharing class OverrideCdlVisibilityAsync implements Queueable {
             feedAttachments
         );
 
-        for (ContentDocumentLink cdl : caseContentDocumentLinks) {
+        for (ContentDocumentLink cdl : contentDocumentLinks) {
             if (
                 feedContentDocumentIdsMap.isEmpty() ||
                 !feedContentDocumentIdsMap.get(cdl.LinkedEntityId)
@@ -57,22 +39,6 @@ public with sharing class OverrideCdlVisibilityAsync implements Queueable {
         }
 
         update contentDocumentLinks;
-    }
-
-    private List<ContentDocumentLink> findCaseContentDocumentLinks(
-        List<ContentDocumentLink> cdls
-    ) {
-        // Receives a list of CDLs and returns only CDLs that belong to a case
-        List<ContentDocumentLink> caseCDLs = new List<ContentDocumentLink>();
-        for (ContentDocumentLink cdl : cdls) {
-            if (
-                cdl.LinkedEntityId.getSObjectType().getDescribe().getName() ==
-                'Case'
-            ) {
-                caseCDLs.add(cdl);
-            }
-        }
-        return caseCDLs;
     }
 
     private List<Id> getLinkedEntityIds(List<ContentDocumentLink> cdls) {
