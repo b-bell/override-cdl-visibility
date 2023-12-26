@@ -30,6 +30,7 @@ public with sharing class OverrideCdlVisibilityAsyncTest {
     @IsTest
     static void addFileToAccount() {
         // Add a file to an account
+        // to ensure visibility is set to All Users
         ContentVersion testFile = [
             SELECT ContentDocumentId
             FROM ContentVersion
@@ -60,7 +61,8 @@ public with sharing class OverrideCdlVisibilityAsyncTest {
 
     @IsTest
     static void addFileToAccountFeed() {
-        // Add a file to an account chatter post
+        // Add a file to an internal account chatter post
+        // to ensure visibility is set to Internal Users
         ContentVersion testFile = [
             SELECT Id, ContentDocumentId
             FROM ContentVersion
@@ -94,7 +96,8 @@ public with sharing class OverrideCdlVisibilityAsyncTest {
 
     @IsTest
     static void addFileAndLinkToAccountFeed() {
-        // Add a file and link to an account chatter post
+        // Add a file and link to an internal account chatter post
+        // to ensure visibility is set to Internal Users
         ContentVersion testFile = [
             SELECT Id, ContentDocumentId
             FROM ContentVersion
