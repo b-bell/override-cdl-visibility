@@ -1,6 +1,6 @@
 # Salesforce Content Document Link Visibility Override
 
-This repository provides an Apex class, `OverrideCdlVisibilityAsync`, which modifies the default visibility setting for files attached to any object in Salesforce to 'All Users'. The class operates asynchronously, allowing it to determine if a file was added as an internal chatter post and maintain that visibility setting.
+This repository provides an Apex class, `OverrideCdlVisibilityAsync`, which modifies the default visibility setting for files attached to any object in Salesforce to 'All Users'. The class operates asynchronously, allowing it to determine if a file was added as an internal chatter post and maintain that visibility setting. [Read more on how Salesforce handles visibility for different org configurations here.](https://help.salesforce.com/s/articleView?id=000384243&type=1)
 
 ## Setup
 
