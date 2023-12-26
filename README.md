@@ -4,7 +4,7 @@ This repository provides an Apex class, `OverrideCdlVisibilityAsync`, which modi
 
 ## Setup
 
-To utilize this code, you need a Salesforce organization with Digital Experiences enabled. You can then incorporate the `OverrideCdlVisibilityAsync` and `OverrideCdlVisibilityAsyncTest` classes, along with the `OverrideCdlVisibilityTrigger` trigger, into your organization's codebase. Using these files as they are will override the visibility of all files in your organization. To specify which objects you want to override, please refer to the section on 'Overriding specific SObjects'.
+To utilize this code, you need a Salesforce organization with Digital Experiences enabled. You can then incorporate the `OverrideCdlVisibilityAsync` and `OverrideCdlVisibilityAsyncTest` classes, along with the `OverrideCdlVisibilityTrigger` trigger, into your organization's codebase. Using this code as written will override the visibility of all files in your organization. To specify which objects you want to override, please refer to the section on 'Overriding specific SObjects'.
 
 ## Functionality
 
