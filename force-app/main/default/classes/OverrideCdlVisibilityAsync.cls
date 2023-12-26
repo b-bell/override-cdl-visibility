@@ -53,7 +53,7 @@ public with sharing class OverrideCdlVisibilityAsync implements Queueable {
     private List<FeedAttachment> getContentFeedAttachments(
         List<Id> parentObjectIds
     ) {
-        // Get all content attachments for a provided parent objects
+        // Get all content attachments for provided parent objects
         List<FeedAttachment> feedAttachments = [
             SELECT Id, RecordId, FeedEntityId
             FROM FeedAttachment
@@ -72,6 +72,7 @@ public with sharing class OverrideCdlVisibilityAsync implements Queueable {
         List<Id> parentIds,
         List<FeedAttachment> feedAttachments
     ) {
+        // Returns a map of content document Ids for provided feed attachments
         Map<Id, List<Id>> feedContentDocumentsMap = new Map<Id, List<Id>>();
 
         Map<Id, FeedItem> feedItemsMap = new Map<Id, FeedItem>(
