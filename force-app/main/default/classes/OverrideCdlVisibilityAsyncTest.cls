@@ -2,15 +2,6 @@
 public with sharing class OverrideCdlVisibilityAsyncTest {
     @TestSetup
     static void makeData() {
-        Case newCase = new Case(
-            Subject = 'New Case Subject',
-            Description = 'New Case Description',
-            Status = 'New',
-            Priority = 'High'
-        );
-
-        insert newCase;
-
         ContentVersion newFile = new ContentVersion(
             PathOnClient = 'test.txt',
             VersionData = Blob.valueOf('Test Content'),
@@ -19,9 +10,18 @@ public with sharing class OverrideCdlVisibilityAsyncTest {
 
         insert newFile;
 
+        Account newAccount = new Account(
+            Name = 'Test Account',
+            BillingCity = 'Test City',
+            BillingState = 'Test State',
+            BillingCountry = 'Test Country'
+        );
+
+        insert newAccount;
+
         FeedItem newFeedItem = new FeedItem(
             Body = 'Test FeedItem Body',
-            ParentId = newCase.Id
+            ParentId = newAccount.Id
         );
 
         insert newFeedItem;
@@ -35,14 +35,7 @@ public with sharing class OverrideCdlVisibilityAsyncTest {
             FROM ContentVersion
             LIMIT 1
         ];
-        Account testAccount = new Account(
-            Name = 'Test Account',
-            BillingCity = 'Test City',
-            BillingState = 'Test State',
-            BillingCountry = 'Test Country'
-        );
-
-        insert testAccount;
+        Account testAccount = [SELECT Id FROM Account LIMIT 1];
 
         ContentDocumentLink linkedFile = new ContentDocumentLink(
             ContentDocumentId = testFile.ContentDocumentId,
@@ -66,14 +59,14 @@ public with sharing class OverrideCdlVisibilityAsyncTest {
     }
 
     @IsTest
-    static void addFileToCaseFeed() {
-        // Add a file to a case chatter post
+    static void addFileToAccountFeed() {
+        // Add a file to an account chatter post
         ContentVersion testFile = [
             SELECT Id, ContentDocumentId
             FROM ContentVersion
             LIMIT 1
         ];
-        Case testCase = [SELECT Id FROM Case LIMIT 1];
+        Account testAccount = [SELECT Id FROM Account LIMIT 1];
         FeedItem testFeedItem = [SELECT Id FROM FeedItem LIMIT 1];
 
         FeedAttachment testFeedAttachment = new FeedAttachment(
@@ -89,7 +82,7 @@ public with sharing class OverrideCdlVisibilityAsyncTest {
         ContentDocumentLink updatedLinkedFile = [
             SELECT Id, Visibility
             FROM ContentDocumentLink
-            WHERE LinkedEntityId = :testCase.Id
+            WHERE LinkedEntityId = :testAccount.Id
         ];
 
         System.assertEquals(
@@ -107,7 +100,7 @@ public with sharing class OverrideCdlVisibilityAsyncTest {
             FROM ContentVersion
             LIMIT 1
         ];
-        Case testCase = [SELECT Id FROM CAse LIMIT 1];
+        Account testAccount = [SELECT Id FROM Account LIMIT 1];
         FeedItem testFeedItem = [SELECT Id FROM FeedItem LIMIT 1];
 
         FeedAttachment testFileFeedAttachment = new FeedAttachment(
